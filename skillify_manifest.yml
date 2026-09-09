@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: skillrush-front
+  labels:
+    app: forest-apps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: forest-apps
+  template:
+    metadata:
+      labels:
+        app: forest-apps
+    spec:
+      containers:
+      - name: app-container
+        image: 818928662779.dkr.ecr.us-east-1.amazonaws.com/skillify/frontend:latest
+        ports:
+        - containerPort: 8080
+        env:
+          - name: VITE_API_URL
+            value: "http://skillrush.florestaencantada.ia.br/api"
+          - name: APP_PORT
+            value: "8080"
+          - name: DEV_PORT
+            value: "5173"

@@ -1,8 +1,10 @@
 // src/api/api.ts
 import axios from "axios";
 
+const apiBaseUrl = window.__APP_CONFIG__?.VITE_API_URL || import.meta.env.VITE_API_URL;
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: apiBaseUrl,
   headers: {
     Accept: "application/json",
   },
