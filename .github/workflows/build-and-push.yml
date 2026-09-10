@@ -10,8 +10,8 @@ on:
   workflow_dispatch:
 
 env:
-  AWS_REGION: us-east-2
-  ECR_REGISTRY: 765009073478.dkr.ecr.us-east-2.amazonaws.com
+  AWS_REGION: us-east-1
+  ECR_REGISTRY: 765009073478.dkr.ecr.us-east-1.amazonaws.com
   ECR_REPOSITORY: skillify/frontend
   GITOPS_REPO: florestaencantada/integration_onprem
   GITOPS_BRANCH: main
