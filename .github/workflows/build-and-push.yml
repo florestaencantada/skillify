@@ -48,7 +48,7 @@ jobs:
         run: |
           TOKEN_JSON=$(curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$AUDIENCE")
           ID_TOKEN=$(echo "$TOKEN_JSON" | jq -r .value)
-          echo "$ID_TOKEN" | awk -F. '{print $2}' | base64 -d 2>/dev/null | jq -r- name: Show OIDC claims (right before assume)
+          echo "$ID_TOKEN" | awk -F. '{print $2}' | base64 -d 2>/dev/null | jq -r
       - name: ⚙️ Configurar Credenciais AWS via OIDC
         uses: aws-actions/configure-aws-credentials@v6.2.4
         with:
