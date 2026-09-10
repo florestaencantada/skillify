@@ -11,7 +11,7 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  ECR_REGISTRY: 818928662779.dkr.ecr.us-east-1.amazonaws.com
+  ECR_REGISTRY: 765009073478.dkr.ecr.us-east-1.amazonaws.com
   ECR_REPOSITORY: skillify/frontend
   GITOPS_REPO: florestaencantada/integration_onprem
   GITOPS_BRANCH: main
@@ -46,7 +46,7 @@ jobs:
       - name: ⚙️ Configurar Credenciais AWS via OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::818928662779:role/github-actions-cdk-deploy
+          role-to-assume: arn:aws:iam::765009073478:role/github-actions-cdk-deploy
           aws-region: ${{ env.AWS_REGION }}
 
       - name: 🔑 Login no Amazon ECR
