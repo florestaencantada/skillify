@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: app-container
-        image: ghcr.io/floresta-encantada/skillify:latest
+        image: 818928662779.dkr.ecr.us-east-1.amazonaws.com/skillify/frontend:latest
         ports:
         - containerPort: 8080
         env:
