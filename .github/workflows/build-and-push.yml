@@ -15,7 +15,7 @@ env:
   ECR_REPOSITORY: skillify/frontend
   GITOPS_REPO: florestaencantada/integration_onprem
   GITOPS_BRANCH: main
-  MANIFEST_PATH: gitops/clusters/forest-dev/applications/skillify-app.yaml
+  MANIFEST_PATH: gitops/clusters/forest-dev/apps/skillrush-front.yaml
 
 permissions:
   id-token: write
@@ -23,7 +23,7 @@ permissions:
 
 jobs:
   # =========================================================================
-  # ETAPA 1: Build da imagem Docker e Push para o ECR
+  # ETAPA 1: Build da imagem Docker e Push para o ECR da Floresta
   # =========================================================================
   build-and-push:
     name: 🐳 Build & Push Docker Image
@@ -44,7 +44,7 @@ jobs:
           echo "image_ref=${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${SHA_SHORT}" >> $GITHUB_OUTPUT
 
       - name: ⚙️ Configurar Credenciais AWS via OIDC
-        uses: aws-actions/configure-aws-credentials@v6.2.4
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::818928662779:role/forest-dev-github
           aws-region: ${{ env.AWS_REGION }}
@@ -53,7 +53,7 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Verifica e cria o repositório no ECR
+      - name: 📦 Garantir repositório no ECR
         uses: int128/create-ecr-repository-action@v1
         with:
           repository: ${{ env.ECR_REPOSITORY }}
@@ -75,10 +75,10 @@ jobs:
           cache-to: type=gha,mode=max
 
   # =========================================================================
-  # ETAPA 2: Promoção GitOps → EKS Floresta
+  # ETAPA 2: Promoção GitOps Automática → Argo CD ApplicationSet
   # =========================================================================
   promote-gitops:
-    name: 🔄 GitOps Update → EKS Floresta
+    name: 🔄 GitOps Update → Argo CD
     needs: build-and-push
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
@@ -92,17 +92,15 @@ jobs:
           token: ${{ secrets.GITOPS_TOKEN }}
           path: gitops-repo
 
-      - name: ✏️ Atualizar Tag da Imagem no Manifesto
+      - name: ✏️ Atualizar Tag da Imagem no ApplicationSet Values
         run: |
           cd gitops-repo
           echo "==> Atualizando ${{ env.MANIFEST_PATH }} para tag ${{ needs.build-and-push.outputs.image_tag }}"
 
-          # Atualiza a tag da imagem no skilrush-front
-          sed -i -E \
-            "s|(image:\s*${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:).*|\1${{ needs.build-and-push.outputs.image_tag }}|g" \
-            "${{ env.MANIFEST_PATH }}"
+          # Atualiza a tag no bloco image.tag do values declarativo
+          sed -i -E "s|(tag:\s*).*|\1\"${{ needs.build-and-push.outputs.image_tag }}\"|g" "${{ env.MANIFEST_PATH }}"
 
-          echo "Diff gerado:"
+          echo "Diff gerado no GitOps:"
           git diff "${{ env.MANIFEST_PATH }}"
 
       - name: 🚀 Commit & Push no GitOps
