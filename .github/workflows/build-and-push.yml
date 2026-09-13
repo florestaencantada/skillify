@@ -13,7 +13,7 @@ env:
   AWS_REGION: us-east-1
   ECR_REGISTRY: 818928662779.dkr.ecr.us-east-1.amazonaws.com
   ECR_REPOSITORY: skillify/frontend
-  GITOPS_REPO: florestaencantada/integration_onprem
+  GITOPS_REPO: florestaencantada/integration_gitops
   GITOPS_BRANCH: main
   MANIFEST_PATH: gitops/clusters/forest-dev/apps/skillrush-front.yaml
 
